@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace ShopTARgv24.Core.Dto
+﻿namespace ShopTARgv24.Core.Domain
 {
-    public class KindergartenDto
+    public class Kindergarten
     {
         public Guid? Id { get; set; }
         public string? GroupName { get; set; }

@@ -6,93 +6,70 @@ using ShopTARgv24.Data;
 
 namespace ShopTARgv24.ApplicationServices.Services
 {
-    public class KindergartenServices : ISpaceshipsServices
+    public class KindergartenServices : IKindergartenServices
     {
         private readonly ShopTARgv24Context _context;
-        private readonly IFileServices _fileServices;
 
         public KindergartenServices
             (
-                ShopTARgv24Context context,
-                IFileServices fileServices
+                ShopTARgv24Context context
             )
         {
             _context = context;
-            _fileServices = fileServices;
         }
 
-        public async Task<Kirdengarten> Create(SpaceshipDto dto)
+        public async Task<Kindergarten> Create(KindergartenDto dto)
         {
-            Spaceship spaceship = new Spaceship();
+            Kindergarten kindergarten = new Kindergarten();
 
-            Kirdengarten.Id = Guid.NewGuid(); // Generate a new GUID for the spaceship
-            Kirdengarten.Name = dto.Name;
-            Kirdengarten.TypeName = dto.TypeName;
-            Kirdengarten.BuiltDate = dto.BuiltDate;
-            Kirdengarten.Crew = dto.Crew;
-            Kirdengarten.EnginePower = dto.EnginePower;
-            Kirdengarten.Passengers = dto.Passengers;
-            Kirdengarten.InnerVolume = dto.InnerVolume;
-            Kirdengarten.CreatedAt = DateTime.Now;
-            Kirdengarten.ModifiedAt = DateTime.Now;
-            _fileServices.FilesToApi(dto, spaceship);
+            kindergarten.Id = Guid.NewGuid();
+            kindergarten.GroupName = dto.GroupName;
+            kindergarten.ChildrenCount = dto.ChildrenCount;
+            kindergarten.KindergartenName = dto.KindergartenName;
+            kindergarten.TeacherName = dto.TeacherName;
+            kindergarten.CreatedAt = DateTime.Now;
+            kindergarten.UpdatedAt = DateTime.Now;
 
-            await _context.Spaceships.AddAsync(spaceship);
+            await _context.Kindergartens.AddAsync(kindergarten);
             await _context.SaveChangesAsync();
-                
-            return spaceship;
+
+            return kindergarten;
         }
-        public async Task<Spaceship> DetailAsync(Guid id)
+
+        public async Task<Kindergarten> DetailAsync(Guid id)
         {
-            var result = await _context.Spaceships
+            var result = await _context.Kindergartens
             .FirstOrDefaultAsync(x => x.Id == id);
 
             return result;
         }
-
-        public async Task<Spaceship> Delete(Guid id)
+        public async Task<Kindergarten> Update(KindergartenDto dto)
         {
-            var spaceship = await _context.Spaceships
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            var images = await _context.FileToApis
-                .Where(x => x.SpaceshipId == id)
-                .Select(y => new FileToApiDto
-                {
-                    Id = y.Id,
-                    SpaceshipId = y.SpaceshipId,
-                    ExistingFilePath = y.ExistingFilePath
-                }).ToArrayAsync();
-
-            await _fileServices.RemoveImagesFromApi(images);
-
-            _context.Spaceships.Remove(spaceship);
-
-            await _context.SaveChangesAsync();
-
-            return spaceship;
-        }
-
-        public async Task<Spaceship> Update(SpaceshipDto dto)
-        {
-            Spaceship domain = new();
+            Kindergarten domain = new();
 
             domain.Id = dto.Id;
-            domain.Name = dto.Name;
-            domain.TypeName = dto.TypeName;
-            domain.BuiltDate = dto.BuiltDate;
-            domain.Crew = dto.Crew;
-            domain.EnginePower = dto.EnginePower;
-            domain.Passengers = dto.Passengers;
-            domain.InnerVolume = dto.InnerVolume;
+            domain.GroupName = dto.GroupName;
+            domain.ChildrenCount = dto.ChildrenCount;
+            domain.KindergartenName = dto.KindergartenName;
+            domain.TeacherName = dto.TeacherName;
             domain.CreatedAt = dto.CreatedAt;
-            domain.ModifiedAt = DateTime.Now;
-            _fileServices.FilesToApi(dto, domain);
+            domain.UpdatedAt = DateTime.Now;
 
-            _context.Spaceships.Update(domain);
+            _context.Kindergartens.Update(domain);
             await _context.SaveChangesAsync();
 
             return domain;
+        }
+
+        public async Task<Kindergarten> Delete(Guid id)
+        {
+            var kindergarten = await _context.Kindergartens
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            _context.Kindergartens.Remove(kindergarten);
+            await _context.SaveChangesAsync();
+
+            return kindergarten;
         }
     }
 }
