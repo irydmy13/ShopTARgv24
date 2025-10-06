@@ -4,18 +4,22 @@ using ShopTARgv24.Core.Dto;
 using ShopTARgv24.Core.ServiceInterface;
 using ShopTARgv24.Data;
 
-namespace ShopTARge24.ApplicationServices.Services
+
+namespace ShopTARgv24.ApplicationServices.Services
 {
     public class RealEstateServices : IRealEstateServices
     {
         private readonly ShopTARgv24Context _context;
+        private readonly IFileServices _fileServices;
 
         public RealEstateServices
             (
-                ShopTARgv24Context context
+                ShopTARgv24Context context,
+                IFileServices fileServices
             )
         {
             _context = context;
+            _fileServices = fileServices;
         }
 
         public async Task<RealEstate> Create(RealEstateDto dto)
@@ -29,6 +33,12 @@ namespace ShopTARge24.ApplicationServices.Services
             domain.BuildingType = dto.BuildingType;
             domain.CreatedAt = DateTime.Now;
             domain.ModifiedAt = DateTime.Now;
+
+            //peaks kontrollima, kas on faile v]i ei ole
+            if (dto.Files != null)
+            {
+                _fileServices.UploadFilesToDatabase(dto, domain);
+            }
 
             await _context.RealEstate.AddAsync(domain);
             await _context.SaveChangesAsync();
@@ -45,7 +55,7 @@ namespace ShopTARge24.ApplicationServices.Services
             domain.Location = dto.Location;
             domain.RoomNumber = dto.RoomNumber;
             domain.BuildingType = dto.BuildingType;
-            domain.CreatedAt = DateTime.Now;
+            domain.CreatedAt = dto.CreatedAt;
             domain.ModifiedAt = DateTime.Now;
 
             _context.RealEstate.Update(domain);
@@ -72,5 +82,6 @@ namespace ShopTARge24.ApplicationServices.Services
 
             return result;
         }
+
     }
 }

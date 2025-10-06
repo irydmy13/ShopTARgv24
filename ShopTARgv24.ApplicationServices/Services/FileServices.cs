@@ -9,20 +9,20 @@ namespace ShopTARgv24.ApplicationServices.Services
 {
     public class FileServices : IFileServices
     {
-        private readonly IHostEnvironment _webHost;
         private readonly ShopTARgv24Context _context;
+        private readonly IHostEnvironment _webHost;
 
         public FileServices
             (
-                IHostEnvironment webHost,
-                ShopTARgv24Context context
+                ShopTARgv24Context context,
+                IHostEnvironment webHost
             )
         {
-            _webHost = webHost;
             _context = context;
+            _webHost = webHost;
         }
 
-        public void FilesToApi(SpaceshipDto dto, Spaceship domain)
+        public void FilesToApi(SpaceshipDto dto, Spaceship spaceship)
         {
             if (dto.Files != null && dto.Files.Count > 0)
             {
@@ -33,8 +33,11 @@ namespace ShopTARgv24.ApplicationServices.Services
 
                 foreach (var file in dto.Files)
                 {
+                    //muutuja string uploadsFolder ja sinna laetakse failid
                     string uploadsFolder = Path.Combine(_webHost.ContentRootPath, "wwwroot", "multipleFileUpload");
+                    //muutuja string uniqueFileName ja siin genereeritakse uus Guid ja lisatakse see faili ette
                     string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                    //muutuja string filePath kombineeritakse ja lisatakse koos kausta unikaalse nimega
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -45,7 +48,7 @@ namespace ShopTARgv24.ApplicationServices.Services
                         {
                             Id = Guid.NewGuid(),
                             ExistingFilePath = uniqueFileName,
-                            SpaceshipId = domain.Id
+                            SpaceshipId = spaceship.Id
                         };
 
                         _context.FileToApis.AddAsync(path);
@@ -56,14 +59,14 @@ namespace ShopTARgv24.ApplicationServices.Services
 
         public async Task<FileToApi> RemoveImageFromApi(FileToApiDto dto)
         {
-            //kui soovin kustutada, siis pean l'bi Id pildi ülesse otsima
+            //meil on vaja leida file andmebaasist läbi id ülesse
             var imageId = await _context.FileToApis
                 .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
-            //kus asuvad pildid, mida hakatakse kustutama
             var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\"
                 + imageId.ExistingFilePath;
 
+            //kui fail on olemas, siis kustuta ära
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
@@ -72,19 +75,21 @@ namespace ShopTARgv24.ApplicationServices.Services
             _context.FileToApis.Remove(imageId);
             await _context.SaveChangesAsync();
 
-            return null;
+            return imageId;
         }
 
         public async Task<List<FileToApi>> RemoveImagesFromApi(FileToApiDto[] dtos)
         {
+            //foreach, mille sees toimub failide kustutamine
             foreach (var dto in dtos)
             {
                 var imageId = await _context.FileToApis
-                    .FirstOrDefaultAsync(x => x.ExistingFilePath == dto.ExistingFilePath);
+                    .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
                 var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\"
                     + imageId.ExistingFilePath;
 
+                //kui fail on olemas, siis kustuta ära
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
@@ -95,6 +100,33 @@ namespace ShopTARgv24.ApplicationServices.Services
             }
 
             return null;
+        }
+
+        public void UploadFilesToDatabase(RealEstateDto dto, RealEstate domain)
+        {
+            //tuleb ära kontrollida, kas on üks fail või mitu
+            if (dto.Files != null && dto.Files.Count > 0)
+            {
+                //kui tuleb mitu faili, siis igaks juhuks tuleks kasutada foreachi
+                foreach (var file in dto.Files)
+                {
+                    //foreachi sees kasutada using-t ja ära mappida
+                    using (var target = new MemoryStream())
+                    {
+                        FileToDatabase files = new FileToDatabase()
+                        {
+                            Id = Guid.NewGuid(),
+                            ImageTitle = file.FileName,
+                            RealEstateId = domain.Id
+                        };
+                        //salvestada andmed andmebaasi
+                        file.CopyTo(target);
+                        files.ImageData = target.ToArray();
+
+                        _context.FileToDatabases.Add(files);
+                    }
+                }
+            }
         }
     }
 }
