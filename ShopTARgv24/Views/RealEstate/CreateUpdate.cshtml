@@ -47,9 +47,7 @@ else
         <div class="form-group row">
             <label asp-for="Files" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-5">
-                <div class="custom-file">
-                    <input class="form-control" asp-for="Files" multiple type="file" />
-                </div>
+                <input class="form-control" asp-for="Files" multiple type="file" />
             </div>
         </div>
 
@@ -59,6 +57,13 @@ else
                 <partial name="_Images" model="images" />
             }
         </div>
+
+        <dl>
+            @foreach (var images in Model.Image)
+            {
+                <partial name="_Images" model="images" />
+            }
+        </dl>
 
         @if (Model.Id.HasValue)
         {

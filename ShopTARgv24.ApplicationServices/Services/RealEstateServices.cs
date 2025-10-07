@@ -54,7 +54,7 @@ namespace ShopTARgv24.ApplicationServices.Services
             domain.Location = dto.Location;
             domain.RoomNumber = dto.RoomNumber;
             domain.BuildingType = dto.BuildingType;
-            domain.CreatedAt = dto.CreatedAt;
+            domain.CreatedAt = DateTime.Now;
             domain.ModifiedAt = DateTime.Now;
 
             _context.RealEstate.Update(domain);
@@ -81,6 +81,5 @@ namespace ShopTARgv24.ApplicationServices.Services
 
             return result;
         }
-
     }
 }
