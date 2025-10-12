@@ -1,8 +1,4 @@
 ﻿@model ShopTARgv24.Models.Kindergartens.KindergartenCreateUpdateViewModel
-@{
-    var rowNumber = 1;
-}
-
 
 <div class="container mt-5">
     <div class="col-lg-8 mx-auto">
@@ -49,6 +45,25 @@
                             <input asp-for="TeacherName" class="form-control" />
                         </div>
                     </div>
+                    <div class="form-group row m-3">
+                        <label asp-for="Files" class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <div class="custom-file">
+                                <input class="form-control" asp-for="Files" multiple type="file" />
+                            </div>
+                        </div>
+					</div>
+                    <div>
+                        @foreach (var images in Model.Image)
+                        {
+                            <div class="d-flex align-items-center mb-3">
+                                <partial name="_Images" model="images" />
+                                <input asp-action="removeImage" asp-controller="kindergartens" asp-route-imageId="@images.ImageId"
+                                       type="submit" class="btn btn-danger ms-3" value="Delete" />
+                            </div>
+                        }
+                    </div>
+                    <br />
 
                     @if (Model.Id.HasValue)
                     {
