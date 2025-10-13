@@ -15,7 +15,7 @@
 
             <div class="card-body p-4">
 
-               <form asp-action="@actionName" asp-controller="Kindergartens" method="post" enctype="multipart/form-data" class="mb-4">
+                <form asp-action="@actionName" asp-controller="Kindergartens" method="post" enctype="multipart/form-data" class="mb-4">
                     @Html.AntiForgeryToken()
 
                     <input asp-for="Id" type="hidden" />
@@ -69,31 +69,35 @@
                         <a asp-action="Index" asp-controller="Kindergartens" class="btn btn-secondary ms-2">Back</a>
                     </div>
                 </form>
-          
+           
                 @if (Model.Image != null && Model.Image.Length > 0)
                 {
                     <hr />
                     <h5>Images</h5>
 
                     <div class="d-flex flex-wrap">
-                        @foreach (var images in Model.Image)
+                        @foreach (var img in Model.Image)
                         {
-                            <div class="d-flex align-items-start mb-3 me-3">
-                                <partial name="_Images" model="images" />
+                            <div class="position-relative me-4 mb-4">
 
-                                <!-- отдельная маленькая ФОРМА ТОЛЬКО ДЛЯ УДАЛЕНИЯ (НЕ вложена в основную!) -->
-                                <form asp-action="RemoveImage" asp-controller="Kindergartens" method="post" class="ms-3">
+                              <partial name="_Images" model="img" />
+
+                               <form asp-action="RemoveImage" asp-controller="Kindergartens" method="post"
+                                      class="position-absolute"
+                                      style="top:-10px; left: -10px;">
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="ImageId" value="@images.ImageId" />
-                                    <input type="hidden" name="KindergartenId" value="@images.KindergartenId" />
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <input type="hidden" name="ImageId" value="@img.ImageId" />
+                                    <input type="hidden" name="KindergartenId" value="@img.KindergartenId" />
+                                    <button type="submit"
+                                            class="btn btn-sm"
+                                            style="background:#6f42c1;color:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(111,66,193,.35);">
+                                        Delete
+                                    </button>
                                 </form>
                             </div>
                         }
                     </div>
                 }
-  
-
             </div>
         </div>
     </div>
