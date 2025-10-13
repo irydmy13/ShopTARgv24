@@ -38,7 +38,6 @@ namespace ShopTARgv24.Controllers
             return View(result);
         }
 
-        // CREATE
         [HttpGet]
         public IActionResult Create()
         {
@@ -68,14 +67,12 @@ namespace ShopTARgv24.Controllers
             if (created == null)
                 return RedirectToAction(nameof(Index));
 
-            // <<<<<< ВАЖНО: Guid? -> Guid >>>>>
             if (vm.Files != null && vm.Files.Count > 0 && created.Id.HasValue)
                 await _fileServices.SaveToDatabaseAsync(vm.Files, created.Id.Value);
 
             return RedirectToAction(nameof(Update), new { id = created.Id });
         }
 
-        // UPDATE
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
@@ -119,14 +116,12 @@ namespace ShopTARgv24.Controllers
             if (updated == null)
                 return RedirectToAction(nameof(Index));
 
-            // <<<<<< fix: используем updated и распаковываем Guid? >>>>>
             if (vm.Files != null && vm.Files.Count > 0 && updated.Id.HasValue)
                 await _fileServices.SaveToDatabaseAsync(vm.Files, updated.Id.Value);
 
             return RedirectToAction(nameof(Update), new { id = updated.Id });
         }
 
-        // DELETE
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -158,7 +153,6 @@ namespace ShopTARgv24.Controllers
             return NotFound();
         }
 
-        // DETAILS
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
@@ -173,13 +167,13 @@ namespace ShopTARgv24.Controllers
                 KindergartenName = kindergarten.KindergartenName,
                 TeacherName = kindergarten.TeacherName,
                 CreatedAt = kindergarten.CreatedAt,
-                UpdatedAt = kindergarten.UpdatedAt
+                UpdatedAt = kindergarten.UpdatedAt,
+                Image = await FilesFromDatabase(id) // ✅ добавлено
             };
 
             return View(vm);
         }
-
-        public async Task<KindergartenImageViewModel[]> FilesFromDatabase(Guid id)
+            public async Task<KindergartenImageViewModel[]> FilesFromDatabase(Guid id)
         {
             var images = await _context.KindergartenFileToDatabase
                 .Where(x => x.KindergartenId == id)
@@ -189,8 +183,9 @@ namespace ShopTARgv24.Controllers
                     ImageId = y.Id,
                     ImageData = y.ImageData,
                     ImageTitle = y.ImageTitle,
-                    Image = string.Format("data:image/gif;base64, {0}", Convert.ToBase64String(y.ImageData))
-                }).ToArrayAsync();
+                    Image = $"data:{(string.IsNullOrWhiteSpace(y.ContentType) ? "image/jpeg" : y.ContentType)};base64,{Convert.ToBase64String(y.ImageData)}"
+                })
+                .ToArrayAsync();
 
             return images;
         }

@@ -1,6 +1,8 @@
 ﻿@model ShopTARgv24.Models.Kindergartens.KindergartenImageViewModel
 
-<div class="form-group row col-sm-8 offset-2">
-    <div>@Model.ImageTitle</div>
-    <img class="card-img-top" src="@Model.Image" asp-append-version="true" />
-</div>
+<figure class="m-2 d-inline-block text-center">
+    <img src="@Model.Image"
+         alt="@Model.ImageTitle"
+         style="max-width:220px;max-height:220px;object-fit:cover;border-radius:10px;" />
+    <figcaption>@Model.ImageTitle</figcaption>
+</figure>
