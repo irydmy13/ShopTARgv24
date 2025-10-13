@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShopTARgv24.ApplicationServices.Services;
+using Microsoft.EntityFrameworkCore;
 using ShopTARgv24.Core.Dto;
 using ShopTARgv24.Core.ServiceInterface;
 using ShopTARgv24.Data;
 using ShopTARgv24.Models.Kindergartens;
-using ShopTARgv24.Models.Spaceships;
-using System.Security.Cryptography.Xml;
-using Microsoft.EntityFrameworkCore;
 
 namespace ShopTARgv24.Controllers
 {
@@ -15,12 +12,11 @@ namespace ShopTARgv24.Controllers
         private readonly ShopTARgv24Context _context;
         private readonly IKindergartenServices _kindergartenServices;
         private readonly IFileServices _fileServices;
-        public KindergartensController
-            (
-                ShopTARgv24Context context,
-                IKindergartenServices kindergartenServices,
-                IFileServices fileServices
-            )
+
+        public KindergartensController(
+            ShopTARgv24Context context,
+            IKindergartenServices kindergartenServices,
+            IFileServices fileServices)
         {
             _context = context;
             _kindergartenServices = kindergartenServices;
@@ -42,20 +38,22 @@ namespace ShopTARgv24.Controllers
             return View(result);
         }
 
-        // Create
+        // CREATE
         [HttpGet]
         public IActionResult Create()
         {
             ViewBag.Action = "Create";
-
-            KindergartenCreateUpdateViewModel result = new();
-
-            return View("CreateUpdate", result);
+            return View("CreateUpdate", new KindergartenCreateUpdateViewModel());
         }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(KindergartenCreateUpdateViewModel vm)
         {
-            var dto = new KindergartenDto()
+            if (!ModelState.IsValid)
+                return View("CreateUpdate", vm);
+
+            var dto = new KindergartenDto
             {
                 Id = vm.Id,
                 GroupName = vm.GroupName,
@@ -65,44 +63,48 @@ namespace ShopTARgv24.Controllers
                 CreatedAt = vm.CreatedAt,
                 UpdatedAt = vm.UpdatedAt
             };
-            var result = await _kindergartenServices.Create(dto);
 
-            if (result == null)
-            {
+            var created = await _kindergartenServices.Create(dto);
+            if (created == null)
                 return RedirectToAction(nameof(Index));
-            }
 
-            return RedirectToAction(nameof(Index));
+            // <<<<<< ВАЖНО: Guid? -> Guid >>>>>
+            if (vm.Files != null && vm.Files.Count > 0 && created.Id.HasValue)
+                await _fileServices.SaveToDatabaseAsync(vm.Files, created.Id.Value);
+
+            return RedirectToAction(nameof(Update), new { id = created.Id });
         }
 
-        //Update
+        // UPDATE
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
             var kindergarten = await _kindergartenServices.DetailAsync(id);
+            if (kindergarten == null) return NotFound();
 
-            if (kindergarten == null)
+            var vm = new KindergartenCreateUpdateViewModel
             {
-                return NotFound();
-            }
-
-            var vm = new KindergartenCreateUpdateViewModel();
-
-            vm.Id = kindergarten.Id;
-            vm.GroupName = kindergarten.GroupName;
-            vm.ChildrenCount = kindergarten.ChildrenCount;
-            vm.KindergartenName = kindergarten.KindergartenName;
-            vm.TeacherName = kindergarten.TeacherName;
-            vm.CreatedAt = kindergarten.CreatedAt;
-            vm.UpdatedAt = kindergarten.UpdatedAt;
+                Id = kindergarten.Id,
+                GroupName = kindergarten.GroupName,
+                ChildrenCount = kindergarten.ChildrenCount,
+                KindergartenName = kindergarten.KindergartenName,
+                TeacherName = kindergarten.TeacherName,
+                CreatedAt = kindergarten.CreatedAt,
+                UpdatedAt = kindergarten.UpdatedAt,
+                Image = await FilesFromDatabase(id)
+            };
 
             return View("CreateUpdate", vm);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(KindergartenCreateUpdateViewModel vm)
         {
-            var dto = new KindergartenDto()
+            if (!ModelState.IsValid)
+                return View("CreateUpdate", vm);
+
+            var dto = new KindergartenDto
             {
                 Id = vm.Id,
                 GroupName = vm.GroupName,
@@ -113,41 +115,40 @@ namespace ShopTARgv24.Controllers
                 UpdatedAt = vm.UpdatedAt
             };
 
-            var result = await _kindergartenServices.Update(dto);
-
-            if (result == null)
-            {
+            var updated = await _kindergartenServices.Update(dto);
+            if (updated == null)
                 return RedirectToAction(nameof(Index));
-            }
 
-            return RedirectToAction(nameof(Index), vm);
+            // <<<<<< fix: используем updated и распаковываем Guid? >>>>>
+            if (vm.Files != null && vm.Files.Count > 0 && updated.Id.HasValue)
+                await _fileServices.SaveToDatabaseAsync(vm.Files, updated.Id.Value);
+
+            return RedirectToAction(nameof(Update), new { id = updated.Id });
         }
 
-        // Delete
+        // DELETE
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
             var kindergarten = await _kindergartenServices.DetailAsync(id);
+            if (kindergarten == null) return NotFound();
 
-            if (kindergarten == null)
+            var vm = new KindergartenDeleteViewModel
             {
-                return NotFound();
-            }
-
-            var vm = new KindergartenDeleteViewModel();
-
-            vm.Id = kindergarten.Id;
-            vm.GroupName = kindergarten.GroupName;
-            vm.ChildrenCount = kindergarten.ChildrenCount;
-            vm.KindergartenName = kindergarten.KindergartenName;
-            vm.TeacherName = kindergarten.TeacherName;
-            vm.CreatedAt = kindergarten.CreatedAt;
-            vm.UpdatedAt = kindergarten.UpdatedAt;
+                Id = kindergarten.Id,
+                GroupName = kindergarten.GroupName,
+                ChildrenCount = kindergarten.ChildrenCount,
+                KindergartenName = kindergarten.KindergartenName,
+                TeacherName = kindergarten.TeacherName,
+                CreatedAt = kindergarten.CreatedAt,
+                UpdatedAt = kindergarten.UpdatedAt
+            };
 
             return View(vm);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmation(Guid id)
         {
             var kindergarten = await _kindergartenServices.Delete(id);
@@ -157,30 +158,27 @@ namespace ShopTARgv24.Controllers
             return NotFound();
         }
 
-        // Details
+        // DETAILS
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
             var kindergarten = await _kindergartenServices.DetailAsync(id);
+            if (kindergarten == null) return NotFound();
 
-            if (kindergarten == null)
+            var vm = new KindergartenDetailsViewModel
             {
-                return NotFound();
-            }
-
-            var vm = new KindergartenDetailsViewModel();
-
-            vm.Id = kindergarten.Id;
-            vm.GroupName = kindergarten.GroupName;
-            vm.ChildrenCount = kindergarten.ChildrenCount;
-            vm.KindergartenName = kindergarten.KindergartenName;
-            vm.TeacherName = kindergarten.TeacherName;
-            vm.CreatedAt = kindergarten.CreatedAt;
-            vm.UpdatedAt = kindergarten.UpdatedAt;
+                Id = kindergarten.Id,
+                GroupName = kindergarten.GroupName,
+                ChildrenCount = kindergarten.ChildrenCount,
+                KindergartenName = kindergarten.KindergartenName,
+                TeacherName = kindergarten.TeacherName,
+                CreatedAt = kindergarten.CreatedAt,
+                UpdatedAt = kindergarten.UpdatedAt
+            };
 
             return View(vm);
         }
-        // Meetod piltide toomiseks andmebaasist
+
         public async Task<KindergartenImageViewModel[]> FilesFromDatabase(Guid id)
         {
             var images = await _context.KindergartenFileToDatabase
@@ -197,24 +195,14 @@ namespace ShopTARgv24.Controllers
             return images;
         }
 
-        // Meetod ühe pilte eemaldamiseks andmebaasist
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveImage(KindergartenImageViewModel vm)
         {
-            var dto = new FileToDatabaseDto()
-            {
-                Id = vm.ImageId
-            };
+            var dto = new FileToDatabaseDto { Id = vm.ImageId };
+            await _fileServices.RemoveImageFromDatabase(dto);
 
-            var image = await _fileServices.RemoveImageFromDatabase(dto);
-
-            if (image == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Update), new { id = vm.KindergartenId });
         }
-
     }
 }

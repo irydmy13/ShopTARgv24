@@ -12,7 +12,7 @@ using ShopTARgv24.Data;
 namespace ShopTARgv24.Data.Migrations
 {
     [DbContext(typeof(ShopTARgv24Context))]
-    [Migration("20251012182459_InitialCreate")]
+    [Migration("20251013095633_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -58,6 +58,8 @@ namespace ShopTARgv24.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("KindergartenId");
 
                     b.ToTable("KindergartenFileToDatabase");
                 });
@@ -127,6 +129,21 @@ namespace ShopTARgv24.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Spaceships");
+                });
+
+            modelBuilder.Entity("ShopTARgv24.Core.Domain.FileToDatabase", b =>
+                {
+                    b.HasOne("ShopTARgv24.Core.Domain.Kindergarten", "Kindergarten")
+                        .WithMany("Files")
+                        .HasForeignKey("KindergartenId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Kindergarten");
+                });
+
+            modelBuilder.Entity("ShopTARgv24.Core.Domain.Kindergarten", b =>
+                {
+                    b.Navigation("Files");
                 });
 #pragma warning restore 612, 618
         }
