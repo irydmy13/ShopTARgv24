@@ -4,6 +4,9 @@ using ShopTARgv24.Core.Dto;
 using ShopTARgv24.Core.ServiceInterface;
 using ShopTARgv24.Data;
 using ShopTARgv24.Models.Kindergartens;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShopTARgv24.Controllers
 {
@@ -38,6 +41,7 @@ namespace ShopTARgv24.Controllers
             return View(result);
         }
 
+        // CREATE
         [HttpGet]
         public IActionResult Create()
         {
@@ -73,6 +77,7 @@ namespace ShopTARgv24.Controllers
             return RedirectToAction(nameof(Update), new { id = created.Id });
         }
 
+        // UPDATE
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
@@ -122,6 +127,7 @@ namespace ShopTARgv24.Controllers
             return RedirectToAction(nameof(Update), new { id = updated.Id });
         }
 
+        // DELETE
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -153,6 +159,7 @@ namespace ShopTARgv24.Controllers
             return NotFound();
         }
 
+        // DETAILS
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
@@ -168,14 +175,16 @@ namespace ShopTARgv24.Controllers
                 TeacherName = kindergarten.TeacherName,
                 CreatedAt = kindergarten.CreatedAt,
                 UpdatedAt = kindergarten.UpdatedAt,
-                Image = await FilesFromDatabase(id) // ✅ добавлено
+                Image = await FilesFromDatabase(id)
             };
 
             return View(vm);
         }
-            public async Task<KindergartenImageViewModel[]> FilesFromDatabase(Guid id)
+
+        // Возвращаем МАССИВ
+        public async Task<KindergartenImageViewModel[]> FilesFromDatabase(Guid id)
         {
-            var images = await _context.KindergartenFileToDatabase
+            return await _context.KindergartenFileToDatabase
                 .Where(x => x.KindergartenId == id)
                 .Select(y => new KindergartenImageViewModel
                 {
@@ -183,11 +192,9 @@ namespace ShopTARgv24.Controllers
                     ImageId = y.Id,
                     ImageData = y.ImageData,
                     ImageTitle = y.ImageTitle,
-                    Image = $"data:{(string.IsNullOrWhiteSpace(y.ContentType) ? "image/jpeg" : y.ContentType)};base64,{Convert.ToBase64String(y.ImageData)}"
+                    Image = $"data:image/jpeg;base64,{Convert.ToBase64String(y.ImageData)}"
                 })
-                .ToArrayAsync();
-
-            return images;
+                .ToArrayAsync(); 
         }
 
         [HttpPost]

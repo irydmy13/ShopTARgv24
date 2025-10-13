@@ -1,8 +1,15 @@
 ﻿@model ShopTARgv24.Models.Kindergartens.KindergartenImageViewModel
 
-<figure class="m-2 d-inline-block text-center">
-    <img src="@Model.Image"
-         alt="@Model.ImageTitle"
-         style="max-width:220px;max-height:220px;object-fit:cover;border-radius:10px;" />
-    <figcaption>@Model.ImageTitle</figcaption>
-</figure>
+<div class="card me-3 mb-3" style="width: 16rem;">
+    <img src="@Model.Image" class="card-img-top" alt="@Model.ImageTitle" style="object-fit: cover; height: 180px;">
+    <div class="card-body">
+        <h6 class="card-title text-truncate" title="@Model.ImageTitle">@Model.ImageTitle</h6>
+
+        <form asp-action="RemoveImage" asp-controller="Kindergartens" method="post" class="mt-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ImageId" value="@Model.ImageId" />
+            <input type="hidden" name="KindergartenId" value="@Model.KindergartenId" />
+            <button type="submit" class="btn btn-outline-danger btn-sm w-100">Delete</button>
+        </form>
+    </div>
+</div>

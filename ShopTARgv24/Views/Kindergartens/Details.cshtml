@@ -63,7 +63,7 @@
 
                 @if (Model.Image != null && Model.Image.Any())
                 {
-                    @foreach (var images in Model.Image)
+                    foreach (var images in Model.Image)
                     {
                         <partial name="_Images" model="images" />
                         <br />
@@ -71,7 +71,7 @@
                 }
                 else
                 {
-                    <p>Пока нет изображений.</p>
+                    <p class="text-muted">Pilte pole lisatud.</p>
                 }
 
                 <a asp-action="Index" asp-controller="Kindergartens" class="btn btn-secondary m-2">Back</a>
