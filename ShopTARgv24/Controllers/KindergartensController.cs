@@ -148,12 +148,11 @@ namespace ShopTARgv24.Controllers
             return View(vm);
         }
 
-        // DELETE (POST) — удаляем всё: сначала изображения, потом запись
+        // DELETE (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmation(Guid id)
         {
-            // 1) удалить все изображения, связанные с анкетой
             var images = await _context.KindergartenFileToDatabase
                 .Where(x => x.KindergartenId == id)
                 .ToListAsync();
@@ -163,7 +162,6 @@ namespace ShopTARgv24.Controllers
                 await _fileServices.RemoveImagesFromDatabase(images);
             }
 
-            // 2) удалить саму анкету
             var kindergarten = await _kindergartenServices.Delete(id);
             if (kindergarten != null)
                 return RedirectToAction(nameof(Index));
@@ -193,7 +191,6 @@ namespace ShopTARgv24.Controllers
             return View(vm);
         }
 
-        // Картинки из БД (массив)
         public async Task<KindergartenImageViewModel[]> FilesFromDatabase(Guid id)
         {
             return await _context.KindergartenFileToDatabase
