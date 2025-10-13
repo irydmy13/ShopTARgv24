@@ -127,7 +127,7 @@ namespace ShopTARgv24.Controllers
             return RedirectToAction(nameof(Update), new { id = updated.Id });
         }
 
-        // DELETE
+        // DELETE (GET)
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -148,10 +148,22 @@ namespace ShopTARgv24.Controllers
             return View(vm);
         }
 
+        // DELETE (POST) — удаляем всё: сначала изображения, потом запись
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmation(Guid id)
         {
+            // 1) удалить все изображения, связанные с анкетой
+            var images = await _context.KindergartenFileToDatabase
+                .Where(x => x.KindergartenId == id)
+                .ToListAsync();
+
+            if (images.Any())
+            {
+                await _fileServices.RemoveImagesFromDatabase(images);
+            }
+
+            // 2) удалить саму анкету
             var kindergarten = await _kindergartenServices.Delete(id);
             if (kindergarten != null)
                 return RedirectToAction(nameof(Index));
@@ -181,7 +193,7 @@ namespace ShopTARgv24.Controllers
             return View(vm);
         }
 
-        // Возвращаем МАССИВ
+        // Картинки из БД (массив)
         public async Task<KindergartenImageViewModel[]> FilesFromDatabase(Guid id)
         {
             return await _context.KindergartenFileToDatabase
@@ -194,7 +206,7 @@ namespace ShopTARgv24.Controllers
                     ImageTitle = y.ImageTitle,
                     Image = $"data:image/jpeg;base64,{Convert.ToBase64String(y.ImageData)}"
                 })
-                .ToArrayAsync(); 
+                .ToArrayAsync();
         }
 
         [HttpPost]
