@@ -142,7 +142,8 @@ namespace ShopTARgv24.Controllers
                 KindergartenName = kindergarten.KindergartenName,
                 TeacherName = kindergarten.TeacherName,
                 CreatedAt = kindergarten.CreatedAt,
-                UpdatedAt = kindergarten.UpdatedAt
+                UpdatedAt = kindergarten.UpdatedAt,
+                Image = await FilesFromDatabase(id)
             };
 
             return View(vm);
