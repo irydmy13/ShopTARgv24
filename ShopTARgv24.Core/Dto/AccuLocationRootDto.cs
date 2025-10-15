@@ -16,19 +16,14 @@
 
     public class TemperatureDto
     {
-        public WeatherValueDto? Metric { get; set; } 
+        public WeatherValueDto? Metric { get; set; }
         public WeatherValueDto? Imperial { get; set; }
     }
-    public class Metric
+
+    public class WeatherValueDto
     {
-        public int? Value { get; set; }
-        public string? Unit { get; set; }
-        public int? UnitType { get; set; }
-    }
-    public class Imperial
-    {
-        public int? Value { get; set; }
-        public string? Unit { get; set; }
-        public int? UnitType { get; set; }
+        public double Value { get; set; }
+        public string Unit { get; set; } = string.Empty;
+        public int UnitType { get; set; }
     }
 }

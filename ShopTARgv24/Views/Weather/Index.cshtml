@@ -11,13 +11,11 @@
                 <input asp-for="CityName" class="form-control" />
                 <span asp-validation-for="CityName" class="text-danger"></span>
             </div>
-            <div class="container">
-                <div class="form-group col-md-offset-3 col-md-5">
-                    <button asp-controller="accuWeathers" asp-acrtion="searchCity" class="btn btn-primary"> Search</button>
-
-                </div>
+        </div>
+        <div class="container">
+            <div class="form-group col-md-offset-3 col-md-5">
+                <button asp-controller="accuWeathers" asp-action="searchCity" class="btn btn-primary">Search</button>
             </div>
-
         </div>
     </form>
 </div>
