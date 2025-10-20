@@ -12,7 +12,7 @@ namespace ShopTARgv24.ApplicationServices.Services
         {
 
 
-            string accuApiKey = "your_api";
+            string accuApiKey = "zpka_f36cbd5899fb401d95efac56d620b045_e0f239d3";
             string baseUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/";
 
             using (var httpClient = new HttpClient())
@@ -24,14 +24,20 @@ namespace ShopTARgv24.ApplicationServices.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
-                    var weatherData = JsonSerializer.Deserialize<AccuLocationWeatherResultDto>(jsonResponse);
-                    return weatherData;
+                    var weatherData = JsonSerializer.Deserialize<AccuLocationRootDto>(jsonResponse);
+                    //return weatherData;
+
+                    dto.LocalObservationDateTime = weatherData.LocalObservationDateTime;
+                    dto.Text = weatherData.WeatherText;
+                    dto.TempMetricValueUnit = weatherData.Temperature.Metric.Value;
                 }
                 else
                 {
                     // Handle error response
                     throw new Exception("Error fetching weather data from AccuWeather API");
                 }
+
+                return dto;
             }
         }
     }
