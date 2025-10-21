@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using ShopTARgv24.ApplicationServices.Services;
 using ShopTARgv24.Core.ServiceInterface;
 using ShopTARgv24.Data;
@@ -11,7 +12,6 @@ namespace ShopTARgv24
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<ISpaceshipsServices, SpaceshipsServices>();
@@ -20,12 +20,16 @@ namespace ShopTARgv24
             builder.Services.AddScoped<IWeatherForecastServices, WeatherForecastServices>();
 
 
+
+
             builder.Services.AddDbContext<ShopTARgv24Context>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddScoped<IChuckNorrisServices, ShopTARgv24.ApplicationServices.Services.ChuckNorrisServices>();
+            builder.Services.AddHttpClient<IChuckNorrisServices, ShopTARgv24.ApplicationServices.Services.ChuckNorrisServices>();
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -37,8 +41,9 @@ namespace ShopTARgv24
             app.UseRouting();
 
             app.UseAuthorization();
-
             app.UseStaticFiles();
+
+
 
             app.MapStaticAssets();
             app.MapControllerRoute(
