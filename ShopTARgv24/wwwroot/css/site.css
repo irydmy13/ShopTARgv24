@@ -1,69 +1,100 @@
-html {
-  font-size: 14px;
+/* === Pink theme (Bootstrap overrides) === */
+:root {
+    --brand-pink: #e83e8c; /* base */
+    --brand-pink-600: #d63384; /* hover/focus */
+    --brand-pink-700: #c22577; /* active */
+    --brand-pink-100: #ffe3ef; /* soft bg */
+    --ring-pink: rgba(232, 62, 140, .35);
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
-}
-
+/* Кнопки primary */
 .btn-primary {
-    background-color: #7c3aed;
-    border-color: #7c3aed;
+    background-color: var(--brand-pink) !important;
+    border-color: var(--brand-pink) !important;
 }
 
     .btn-primary:hover,
     .btn-primary:focus {
-        background-color: #6d28d9;
-        border-color: #6d28d9;
+        background-color: var(--brand-pink-600) !important;
+        border-color: var(--brand-pink-600) !important;
     }
 
+    .btn-primary:active,
+    .btn-primary.active {
+        background-color: var(--brand-pink-700) !important;
+        border-color: var(--brand-pink-700) !important;
+    }
 
+/* Обводочная кнопка */
 .btn-outline-primary {
-    color: #7c3aed;
-    border-color: #7c3aed;
+    color: var(--brand-pink) !important;
+    border-color: var(--brand-pink) !important;
 }
 
     .btn-outline-primary:hover,
     .btn-outline-primary:focus {
-        color: #fff;
-        background-color: #7c3aed;
-        border-color: #7c3aed;
+        color: #fff !important;
+        background-color: var(--brand-pink) !important;
+        border-color: var(--brand-pink) !important;
     }
 
-.btn-back {
-    background-color: #e83e8c; /* розовый */
-    border-color: #e83e8c;
-    color: white;
-    transition: 0.2s ease;
+    /* Disabled состояния */
+    .btn-primary:disabled,
+    .btn-outline-primary:disabled {
+        opacity: .65;
+    }
+
+/* Фокус у инпутов/кнопок */
+.btn:focus, .form-control:focus, .form-select:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 .2rem var(--ring-pink) !important;
+    border-color: var(--brand-pink-600) !important;
 }
 
-    .btn-back:hover,
-    .btn-back:focus {
-        background-color: #d63384; /* чуть темнее при наведении */
-        border-color: #d63384;
-        color: white;
+/* Цвет ссылок и ссылок в navbar */
+a, .link-primary {
+    color: var(--brand-pink);
+}
+
+    a:hover, .link-primary:hover {
+        color: var(--brand-pink-600);
     }
+
+/* Navbar — подчёркнуто розовым при hover */
+.navbar .nav-link {
+    color: #333;
+}
+
+    .navbar .nav-link:hover,
+    .navbar .nav-link:focus,
+    .navbar .nav-link.active {
+        color: var(--brand-pink) !important;
+    }
+
+/* badgets/бэкграунды в стиле Bootstrap */
+.bg-primary, .badge.bg-primary {
+    background-color: var(--brand-pink) !important;
+}
+
+.border-primary {
+    border-color: var(--brand-pink) !important;
+}
+
+.text-primary {
+    color: var(--brand-pink) !important;
+}
+
+/* Пагинация активная */
+.pagination .page-item.active .page-link {
+    background-color: var(--brand-pink) !important;
+    border-color: var(--brand-pink) !important;
+}
+
+.pagination .page-link:focus {
+    box-shadow: 0 0 0 .2rem var(--ring-pink) !important;
+}
+
+/* Нежный розовый фон для карточных хедеров (опционально) */
+.card-header {
+    background: linear-gradient(180deg, var(--brand-pink-100), #fff) !important;
+    border-bottom-color: var(--brand-pink-100) !important;
+}
