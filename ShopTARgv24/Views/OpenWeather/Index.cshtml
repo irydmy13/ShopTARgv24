@@ -1,47 +1,23 @@
-﻿@model ShopTARgv24.Core.ServiceInterface.OpenWeatherDto
-@{
-    ViewData["Title"] = "OpenWeather";
-    var city = (string)(ViewBag.City ?? "");
-    var icon = Model?.Icon ?? "01d";
-}
+﻿@model ShopTARgv24.Models.OpenWeather.OpenWeatherSearchViewModel
 
-<div class="container mt-4">
-    <h2 class="mb-3">OpenWeather — Current Weather</h2>
-
-    <form method="get" class="row g-2 mb-4">
-        <div class="col-md-6">
-            <input name="city" value="@city" class="form-control" placeholder="Enter city (e.g., Tallinn)" />
-        </div>
-        <div class="col-md-auto">
-            <button class="btn btn-primary">Search</button>
-        </div>
-    </form>
-
-    @if (!string.IsNullOrWhiteSpace(city) && Model == null)
-    {
-        <div class="alert alert-warning">Nothing found for “@city”.</div>
-    }
-
-    @if (Model != null)
-    {
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <img src="@($"https://openweathermap.org/img/wn/{icon}@2x.png")"
-                         alt="@Model.Description" width="80" height="80" class="me-3" />
-                    <div>
-                        <h4 class="mb-1">@Model.City, @Model.Country</h4>
-                        <div class="text-muted">@Model.Description</div>
-                    </div>
-                </div>
-                <hr />
-                <div class="row">
-                    <div class="col-md-3"><strong>Temp:</strong> @Model.Temp °C</div>
-                    <div class="col-md-3"><strong>Feels like:</strong> @Model.FeelsLike °C</div>
-                    <div class="col-md-3"><strong>Humidity:</strong> @Model.Humidity %</div>
-                    <div class="col-md-3"><strong>Wind:</strong> @Model.WindSpeed m/s</div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4" style="font-family: Arial;">Search the forecast in a city</h2>
+                    <form method="post" asp-action="searchCity" asp-controller="openWeather">
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">City name:</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-block">Search</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    }
+    </div>
 </div>
