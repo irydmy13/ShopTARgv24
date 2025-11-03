@@ -1,4 +1,3 @@
-/* === Pink theme (Bootstrap overrides) === */
 :root {
     --brand-pink: #e83e8c; /* base */
     --brand-pink-600: #d63384; /* hover/focus */
@@ -7,7 +6,6 @@
     --ring-pink: rgba(232, 62, 140, .35);
 }
 
-/* Кнопки primary */
 .btn-primary {
     background-color: var(--brand-pink) !important;
     border-color: var(--brand-pink) !important;
@@ -25,7 +23,6 @@
         border-color: var(--brand-pink-700) !important;
     }
 
-/* Обводочная кнопка */
 .btn-outline-primary {
     color: var(--brand-pink) !important;
     border-color: var(--brand-pink) !important;
@@ -38,19 +35,16 @@
         border-color: var(--brand-pink) !important;
     }
 
-    /* Disabled состояния */
     .btn-primary:disabled,
     .btn-outline-primary:disabled {
         opacity: .65;
     }
 
-/* Фокус у инпутов/кнопок */
 .btn:focus, .form-control:focus, .form-select:focus, .form-check-input:focus {
     box-shadow: 0 0 0 .2rem var(--ring-pink) !important;
     border-color: var(--brand-pink-600) !important;
 }
 
-/* Цвет ссылок и ссылок в navbar */
 a, .link-primary {
     color: var(--brand-pink);
 }
@@ -59,7 +53,6 @@ a, .link-primary {
         color: var(--brand-pink-600);
     }
 
-/* Navbar — подчёркнуто розовым при hover */
 .navbar .nav-link {
     color: #333;
 }
@@ -70,7 +63,6 @@ a, .link-primary {
         color: var(--brand-pink) !important;
     }
 
-/* badgets/бэкграунды в стиле Bootstrap */
 .bg-primary, .badge.bg-primary {
     background-color: var(--brand-pink) !important;
 }
@@ -83,7 +75,6 @@ a, .link-primary {
     color: var(--brand-pink) !important;
 }
 
-/* Пагинация активная */
 .pagination .page-item.active .page-link {
     background-color: var(--brand-pink) !important;
     border-color: var(--brand-pink) !important;
@@ -93,7 +84,6 @@ a, .link-primary {
     box-shadow: 0 0 0 .2rem var(--ring-pink) !important;
 }
 
-/* Нежный розовый фон для карточных хедеров (опционально) */
 .card-header {
     background: linear-gradient(180deg, var(--brand-pink-100), #fff) !important;
     border-bottom-color: var(--brand-pink-100) !important;
