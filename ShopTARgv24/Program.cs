@@ -28,6 +28,14 @@ namespace ShopTARgv24
 
             builder.Services.AddHttpClient<IChuckNorrisServices, ChuckNorrisServices>();
 
+ 
+            builder.Services.AddHttpClient<IOpenWeatherService, OpenWeatherService>((sp, client) =>
+            {
+                var cfg = sp.GetRequiredService<IConfiguration>();
+                var baseUrl = cfg["OpenWeather:BaseUrl"] ?? "https://api.openweathermap.org/data/2.5/";
+                client.BaseAddress = new Uri(baseUrl);
+            });
+
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
