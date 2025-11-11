@@ -7,7 +7,8 @@ using ShopTARgv24.Core.ServiceInterface;
 using ShopTARgv24.ApplicationServices.Services;
 using Microsoft.Extensions.Hosting;
 using ShopTARgv24.RealEstateTest.Mock;
-
+using System.Linq;
+using ShopTARgv24.Core.Domain;
 
 namespace ShopTARgv24.RealEstateTest
 {
