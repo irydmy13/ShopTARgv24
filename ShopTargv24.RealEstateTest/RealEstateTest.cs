@@ -218,7 +218,7 @@ namespace ShopTARgv24.RealEstateTest
 
 
 
-        /// TASK //////////////////////////////////
+        /// TASK. 3 RealEstate tests //////////////////////////////////
 
         /// We check that after deleting the record, 
         /// there are no rows left in FileToDatabases with this RealEstateId.
