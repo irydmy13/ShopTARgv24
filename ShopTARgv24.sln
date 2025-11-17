@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopTARgv24.Core", "ShopTAR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopTARgv24.RealEstateTest", "ShopTargv24.RealEstateTest\ShopTARgv24.RealEstateTest.csproj", "{4F1FEA40-DC1F-4539-9FF1-7250A76BB68B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopTARgv24.SpaceShips", "ShopTARgv24.SpaceShips\ShopTARgv24.SpaceShips.csproj", "{C5C30B66-93FA-41A1-8CD0-C404E8C88CE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{4F1FEA40-DC1F-4539-9FF1-7250A76BB68B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F1FEA40-DC1F-4539-9FF1-7250A76BB68B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F1FEA40-DC1F-4539-9FF1-7250A76BB68B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5C30B66-93FA-41A1-8CD0-C404E8C88CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5C30B66-93FA-41A1-8CD0-C404E8C88CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5C30B66-93FA-41A1-8CD0-C404E8C88CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5C30B66-93FA-41A1-8CD0-C404E8C88CE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

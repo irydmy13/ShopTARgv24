@@ -68,7 +68,7 @@ namespace ShopTARgv24.ApplicationServices.Services
                 }).ToArrayAsync();
 
             await _fileServices.RemoveImagesFromApi(images);
-            _context.Spaceships.Remove(spaceship);
+            _ = _context.Spaceships.Remove(spaceship);
             await _context.SaveChangesAsync();
 
             return spaceship;
