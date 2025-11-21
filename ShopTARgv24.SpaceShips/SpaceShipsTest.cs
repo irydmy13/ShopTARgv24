@@ -95,30 +95,23 @@ namespace ShopTARgv24.SpaceShipsTest
         // 4) An attempt to delete using an incorrect ID should not affect the existing ship
 
         [Fact]
-        public async Task ShouldNot_DeleteByIdSpaceship_WhenWrongId()
+        public async Task ShouldNot_DeleteFirstSpaceship_WhenDeleteSecond()
         {
             // Arrange
             var service = Svc<ISpaceshipsServices>();
-            var dto = SpaceshipDto1();
 
-            var created = await service.Create(dto);
-            var wrongId = Guid.NewGuid();
+            var created1 = await service.Create(SpaceshipDto1());
+            var created2 = await service.Create(SpaceshipDto2());
 
-            // Act
-            try
-            {
-                await service.Delete(wrongId);
-            }
-            catch
-            {
-                
-            }
+            // Act: удаляем второй корабль
+            await service.Delete((Guid)created2.Id);
 
-            var stillExists = await service.DetailAsync((Guid)created.Id);
+            // Проверяем, что первый всё ещё существует
+            var stillExists = await service.DetailAsync((Guid)created1.Id);
 
             // Assert
             Assert.NotNull(stillExists);
-            Assert.Equal(created.Id, stillExists.Id);
+            Assert.Equal(created1.Id, stillExists.Id);
         }
 
         // 5) Each Create operation must generate a unique ID

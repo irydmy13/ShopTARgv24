@@ -75,26 +75,25 @@ namespace ShopTARgv24.ApplicationServices.Services
             return result;
         }
 
-        public async Task<RealEstate?> Delete(Guid id)
+        public async Task<RealEstate> Delete(Guid id)
         {
-            var entity = await _context.RealEstate
+            var result = await _context.RealEstate
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (entity == null)
-                return null;
-
            var images = await _context.FileToDatabases
-                .Where(f => f.RealEstateId == id)
-                .ToListAsync();
+                .Where(x => x.RealEstateId == id)
+                .Select(x => new FileToDatabaseDto
+                {
+                    Id = x.Id,
+                    ImageTitle = x.ImageTitle,
+                    RealEstateId = x.RealEstateId
+                }).ToArrayAsync();
 
-            if (images.Count > 0)
-                _context.FileToDatabases.RemoveRange(images);
-
-           _context.RealEstate.Remove(entity);
-
+           await _fileServices.RemoveImagesFromDatabase(images);
+           _context.RealEstate.Remove(result);
            await _context.SaveChangesAsync();
 
-            return entity;
+           return result;
         }
     }
 }

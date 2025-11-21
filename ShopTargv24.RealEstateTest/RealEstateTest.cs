@@ -235,10 +235,11 @@ namespace ShopTARgv24.RealEstateTest
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now
             };
-
+            // Act
             var created = await Svc<IRealEstateServices>().Create(dto);
             var id = (Guid)created.Id;
 
+            //Arrange
             var db = Svc<ShopTARgv24Context>();
             db.FileToDatabases.Add(new FileToDatabase
             {
@@ -254,9 +255,10 @@ namespace ShopTARgv24.RealEstateTest
                 ImageTitle = "livingroom.jpg",
                 ImageData = new byte[] { 4, 5, 6 }
             });
-            await db.SaveChangesAsync();
+
 
             // Act
+            await db.SaveChangesAsync();
             await Svc<IRealEstateServices>().Delete(id);
 
             // Assert
