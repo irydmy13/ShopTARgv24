@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ShopTARgv24.Core.Dto;
+using ShopTARgv24.Data;
 using Microsoft.Extensions.Hosting;
 using ShopTARgv24.Core.Domain;
-using ShopTARgv24.Core.Dto;
 using ShopTARgv24.Core.ServiceInterface;
-using ShopTARgv24.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShopTARgv24.ApplicationServices.Services
 {
@@ -21,6 +21,7 @@ namespace ShopTARgv24.ApplicationServices.Services
             _context = context;
             _webHost = webHost;
         }
+
         public void FilesToApi(SpaceshipDto dto, Spaceship spaceship)
         {
             if (dto.Files != null && dto.Files.Count > 0)
@@ -58,9 +59,14 @@ namespace ShopTARgv24.ApplicationServices.Services
 
         public async Task<FileToApi> RemoveImageFromApi(FileToApiDto dto)
         {
-            var imageId = await _context.FileToApis.FirstOrDefaultAsync(x => x.Id == dto.Id);
-            var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\" + imageId.ExistingFilePath;
+            //meil on vaja leida file andmebaasist läbi id ülesse
+            var imageId = await _context.FileToApis
+                .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
+            var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\"
+                + imageId.ExistingFilePath;
+
+            //kui fail on olemas, siis kustuta ära
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
@@ -74,11 +80,16 @@ namespace ShopTARgv24.ApplicationServices.Services
 
         public async Task<List<FileToApi>> RemoveImagesFromApi(FileToApiDto[] dtos)
         {
+            //foreach, mille sees toimub failide kustutamine
             foreach (var dto in dtos)
             {
-                var imageId = await _context.FileToApis.FirstOrDefaultAsync(x => x.Id == dto.Id);
-                var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\" + imageId.ExistingFilePath;
+                var imageId = await _context.FileToApis
+                    .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
+                var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\"
+                    + imageId.ExistingFilePath;
+
+                //kui fail on olemas, siis kustuta ära
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
@@ -87,30 +98,28 @@ namespace ShopTARgv24.ApplicationServices.Services
                 _context.FileToApis.Remove(imageId);
                 await _context.SaveChangesAsync();
             }
+
             return null;
         }
 
-
-        // Meetod, mis salvestab failid andmebaasi
         public void UploadFilesToDatabase(RealEstateDto dto, RealEstate domain)
         {
-            // tuleb ära kontrollida, kas on üks fail või mitu faili
+            //tuleb ära kontrollida, kas on üks fail või mitu
             if (dto.Files != null && dto.Files.Count > 0)
             {
-                //kui tuleb mitu faili, siis igaks juhuks tuleb kasutada foreachi
+                //kui tuleb mitu faili, siis igaks juhuks tuleks kasutada foreachi
                 foreach (var file in dto.Files)
                 {
-                    // foreachi sees kasutada using-t ja ära mappшвф
+                    //foreachi sees kasutada using-t ja ära mappida
                     using (var target = new MemoryStream())
                     {
-                        FileToDatabase files = new FileToDatabase
+                        FileToDatabase files = new FileToDatabase()
                         {
                             Id = Guid.NewGuid(),
                             ImageTitle = file.FileName,
-                            ImageData = target.ToArray(),
                             RealEstateId = domain.Id
                         };
-                        // salvesta andmed andmebaasi
+                        //salvestada andmed andmebaasi
                         file.CopyTo(target);
                         files.ImageData = target.ToArray();
 
@@ -123,14 +132,26 @@ namespace ShopTARgv24.ApplicationServices.Services
         public async Task<FileToDatabase> RemoveImagesFromDatabase(FileToDatabaseDto[] dtos)
         {
             foreach (var dto in dtos)
-            { 
-            var imageId = await _context.FileToDatabases
-                .FirstOrDefaultAsync(x => x.Id == dto.Id);
+            {
+                var imageId = await _context.FileToDatabases
+                    .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
-            _context.FileToDatabases.Remove(imageId);
-            await _context.SaveChangesAsync();
+                _context.FileToDatabases.Remove(imageId);
+                await _context.SaveChangesAsync();
             }
             return null;
+        }
+
+        public async Task<FileToDatabase> RemoveImageFromDatabase(FileToDatabaseDto dto)
+        {
+            var image = await _context.FileToDatabases
+                .Where(x => x.Id == dto.Id)
+                .FirstOrDefaultAsync();
+
+            _context.FileToDatabases.Remove(image);
+            await _context.SaveChangesAsync();
+
+            return image;
         }
     }
 }
