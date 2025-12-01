@@ -39,7 +39,7 @@ namespace ShopTARgv24.ApplicationServices.Services
                 _fileServices.UploadFilesToDatabase(dto, domain);
             }
 
-            await _context.RealEstates.AddAsync(domain);
+            await _context.RealEstate.AddAsync(domain);
             await _context.SaveChangesAsync();
 
             return domain;
@@ -62,7 +62,7 @@ namespace ShopTARgv24.ApplicationServices.Services
                 _fileServices.UploadFilesToDatabase(dto, domain);
             }
 
-            _context.RealEstates.Update(domain);
+            _context.RealEstate.Update(domain);
             await _context.SaveChangesAsync();
 
             return domain;
@@ -70,7 +70,7 @@ namespace ShopTARgv24.ApplicationServices.Services
 
         public async Task<RealEstate> DetailAsync(Guid id)
         {
-            var result = await _context.RealEstates
+            var result = await _context.RealEstate
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             return result;
@@ -78,10 +78,10 @@ namespace ShopTARgv24.ApplicationServices.Services
 
         public async Task<RealEstate> Delete(Guid id)
         {
-            var result = await _context.RealEstates
+            var result = await _context.RealEstate
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            var images = await _context.FileToDatabase
+            var images = await _context.FileToDatabases
                 .Where(x => x.RealEstateId == id)
                 .Select(x => new FileToDatabaseDto
                 {
@@ -91,7 +91,7 @@ namespace ShopTARgv24.ApplicationServices.Services
                 }).ToArrayAsync();
 
             await _fileServices.RemoveImagesFromDatabase(images);
-            _context.RealEstates.Remove(result);
+            _context.RealEstate.Remove(result);
             await _context.SaveChangesAsync();
 
             return result;
