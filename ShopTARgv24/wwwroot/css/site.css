@@ -67,3 +67,20 @@ body {
         border-color: #d63384;
         color: white;
     }
+
+/* === SignalR Chat button style === */
+.chat-send-btn {
+    background-color: #e83e8c; /* розовый */
+    border-color: #e83e8c;
+    color: #ffffff;
+    font-weight: 500;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+    .chat-send-btn:hover,
+    .chat-send-btn:focus {
+        background-color: #d63384; /* чуть темнее при наведении */
+        border-color: #d63384;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
