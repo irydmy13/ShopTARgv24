@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShopTARgv24.Core.Dto;
 using ShopTARgv24.Core.ServiceInterface;
 using ShopTARgv24.Data;
 using ShopTARgv24.Models.RealEstate;
-using ShopTARgv24.Models.Spaceships;
 
 
 namespace ShopTARgv24.Controllers
@@ -27,9 +27,11 @@ namespace ShopTARgv24.Controllers
             _fileServices = fileServices;
         }
 
+
+        //[Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
-            var result = _context.RealEstate
+            var result = _context.RealEstates
                 .Select(x => new RealEstateIndexViewModel
                 {
                     Id = x.Id,
@@ -215,14 +217,14 @@ namespace ShopTARgv24.Controllers
             vm.Location = realEstate.Location;
             vm.CreatedAt = realEstate.CreatedAt;
             vm.ModifiedAt = realEstate.ModifiedAt;
-            vm.Images.AddRange(photos);
+            vm.Image.AddRange(photos);
 
             return View(vm);
         }
 
         private async Task<RealEstateImageViewModel[]> FilesFromDatabase(Guid id)
         {
-            return await _context.FileToDatabases
+            return await _context.FileToDatabase
                 .Where(x => x.RealEstateId == id)
                 .Select(y => new RealEstateImageViewModel
                 {
