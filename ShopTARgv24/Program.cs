@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using ShopTARgv24.ApplicationServices.Services;
+using ShopTARgv24.Core.Domain;
 using ShopTARgv24.Core.ServiceInterface;
 using ShopTARgv24.Data;
 using ShopTARgv24.Hubs;
@@ -13,6 +15,13 @@ namespace ShopTARgv24
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 6;
+            })
+                .AddEntityFrameworkStores<ShopTARgv24Context>()
+                .AddDefaultTokenProviders()
+                .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("CustomEmailConfirmation");
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -21,11 +30,8 @@ namespace ShopTARgv24
             builder.Services.AddScoped<IRealEstateServices, RealEstateServices>();
             builder.Services.AddScoped<IWeatherForecastServices, WeatherForecastServices>();
 
-
-
-
             builder.Services.AddDbContext<ShopTARgv24Context>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IChuckNorrisServices, ChuckNorrisServices>();
             builder.Services.AddHttpClient<IChuckNorrisServices, ChuckNorrisServices>();

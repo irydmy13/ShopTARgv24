@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ShopTARgv24.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace ShopTARgv24.Controllers
 {

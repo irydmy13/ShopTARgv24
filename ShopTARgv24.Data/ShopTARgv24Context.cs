@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ShopTARgv24.Core.Domain;
 using System.Collections.Generic;
 
@@ -14,6 +15,8 @@ namespace ShopTARgv24.Data
         public DbSet<FileToApi> FileToApis { get; set; }
         public DbSet<RealEstate> RealEstate { get; set; }
         public DbSet<FileToDatabase> FileToDatabases { get; set; }
+
+        public DbSet<IdentityRole> IdentityRoles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
