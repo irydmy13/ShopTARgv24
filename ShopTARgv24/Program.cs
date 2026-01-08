@@ -46,6 +46,16 @@ namespace ShopTARgv24
                 .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("CustomEmailConfirmation");
             //.AddDefaultUI();
 
+            //builder.Services.AddAuthentication()
+            //    .AddFacebook(facebookOptions =>
+            //    {
+            //        facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"]
+            //        ?? throw new InvalidOperationException("Facebook AppId not found.");
+
+            //        facebookOptions.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"]
+            //        ?? throw new InvalidOperationException("Facebook AppSecret not found.");
+            //    });
+
             builder.Services.AddAuthentication()
                 .AddGoogle(googleOptions =>
                 {

@@ -33,6 +33,8 @@ namespace ShopTARgv24.ApplicationServices.Services
                 HtmlBody = dto.Body
             };
 
+            //vaja teha foreach, kus saab lisada mitu faili
+            //vaja kasutada kontrolli, kus kui faili pole, siis ei lisa
             foreach (var file in dto.Attachment)
             {
                 if (file.Length > 0)
@@ -61,10 +63,6 @@ namespace ShopTARgv24.ApplicationServices.Services
         {
             dto.Token = token;
             var email = new MimeMessage();
-
-            _config.GetSection("EmailUserName").Value = "kotiukir@gmail.com";
-            _config.GetSection("EmailHost").Value = "smtp.gmail.com";
-            _config.GetSection("EmailPassword").Value = "vgyg jirj qpes giee";
 
             email.From.Add(MailboxAddress.Parse(_config.GetSection("EmailUserName").Value));
             email.To.Add(MailboxAddress.Parse(dto.To));
