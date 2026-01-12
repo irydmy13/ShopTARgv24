@@ -31,7 +31,7 @@ namespace ShopTARgv24.Controllers
         //[Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
-            var result = _context.RealEstates
+            var result = _context.RealEstate
                 .Select(x => new RealEstateIndexViewModel
                 {
                     Id = x.Id,
@@ -217,14 +217,14 @@ namespace ShopTARgv24.Controllers
             vm.Location = realEstate.Location;
             vm.CreatedAt = realEstate.CreatedAt;
             vm.ModifiedAt = realEstate.ModifiedAt;
-            vm.Image.AddRange(photos);
+            vm.Images.AddRange(photos);
 
             return View(vm);
         }
 
         private async Task<RealEstateImageViewModel[]> FilesFromDatabase(Guid id)
         {
-            return await _context.FileToDatabase
+            return await _context.FileToDatabases
                 .Where(x => x.RealEstateId == id)
                 .Select(y => new RealEstateImageViewModel
                 {

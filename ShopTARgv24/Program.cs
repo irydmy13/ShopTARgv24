@@ -6,6 +6,7 @@ using ShopTARgv24.Core.ServiceInterface;
 using ShopTARgv24.Data;
 using ShopTARgv24.Hubs;
 
+
 namespace ShopTARgv24
 {
     public class Program
@@ -23,11 +24,11 @@ namespace ShopTARgv24
             builder.Services.AddScoped<IRealEstateServices, RealEstateServices>();
             builder.Services.AddScoped<IWeatherForecastServices, WeatherForecastServices>();
             builder.Services.AddScoped<IChuckNorrisServices, ChuckNorrisServices>();
-            builder.Services.AddScoped<ICocktailServices, CocktailServices>();
+            builder.Services.AddScoped<ICocktailService, CocktailService>();
             builder.Services.AddScoped<IEmailServices, EmailServices>();
 
             builder.Services.AddHttpClient<IChuckNorrisServices, ChuckNorrisServices>();
-            builder.Services.AddHttpClient<ICocktailServices, CocktailServices>();
+            builder.Services.AddHttpClient<ICocktailService, CocktailService>();
 
             builder.Services.AddDbContext<ShopTARgv24Context>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -81,8 +82,8 @@ namespace ShopTARgv24
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseStaticFiles();
 
